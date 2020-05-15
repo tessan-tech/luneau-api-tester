@@ -1,7 +1,6 @@
 import { Component } from "@angular/core";
 import { SignalRTCService as SignalrRTCService } from "./services/rtc-signalr.service";
 import { RTCConnection, RTCInitiator, RTCInformation } from "light-rtc";
-import { ConsoleReporter } from 'jasmine';
 
 @Component({
   selector: "app-root",
@@ -9,9 +8,9 @@ import { ConsoleReporter } from 'jasmine';
   styleUrls: ["./app.component.css"],
 })
 export class AppComponent {
-  public authUrl: string;
-  public deviceServerUrl: string;
-  public apiKey: string;
+  public authUrl: string = "http://localhost:5001/api/organization/token";
+  public deviceServerUrl: string = "http://localhost:5000";
+  public apiKey: string = "VmvhVemNpd2mERk9E4mys5bA13rE%2fL%2bH050tRCE66PA2HKO1Yz91LWXMN4N%2fKfC9XTs%2f7G9Tny5stN7dFaEeXg%3d%3d";
   public authToken: string;
   public deviceStream: MediaStream;
 
@@ -25,11 +24,13 @@ export class AppComponent {
     });
     const json = await response.json();
     this.authToken = json.accessToken;
+
+    this.startRtcConnection(this.authToken);
     console.log("authentitcated, token : " + this.authToken);
   }
 
-  public async startRtcConnection(): Promise<void> {
-    await this.signalrRTCService.StartConnection(this.deviceServerUrl);
+  public async startRtcConnection(authToken: string): Promise<void> {
+    await this.signalrRTCService.StartConnection(this.deviceServerUrl, authToken);
     console.log("connected to hub");
     const initiator = new RTCInitiator(
       undefined,

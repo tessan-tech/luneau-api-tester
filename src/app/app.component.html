@@ -13,5 +13,6 @@
     <button (click)="requestToken()">Get Token</button>
   </li>
   <li>Authenticated : {{ authToken !== undefined }}</li>
+  <li><label>Device server URL</label> : <input type="text" [(ngModel)]="deviceServerUrl" /></li>
 </ul>
-<video [srcObject]="deviceStream"></video>
+<video autoplay [srcObject]="deviceStream"></video>
