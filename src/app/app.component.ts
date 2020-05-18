@@ -8,8 +8,8 @@ import { RTCConnection, RTCInitiator, RTCInformation } from "light-rtc";
   styleUrls: ["./app.component.css"],
 })
 export class AppComponent {
-  public authUrl: string = "http://auth-server:3000/api/organization/token";
-  public deviceServerUrl: string = "http://device-api:3001";
+  public authUrl: string = "http://localhost:3000/api/organization/token";
+  public deviceServerUrl: string = "http://localhost:3001";
   public apiKey: string = "VmvhVemNpd2mERk9E4mys5bA13rE%2fL%2bH050tRCE66PA2HKO1Yz91LWXMN4N%2fKfC9XTs%2f7G9Tny5stN7dFaEeXg%3d%3d";
   public authToken: string;
   public deviceStream: MediaStream;
