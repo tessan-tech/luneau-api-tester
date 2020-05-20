@@ -1,18 +1,33 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align: center;">
-  <h1>
-    This is the angular test project for Ludeau
-  </h1>
+<div class="wrapper-container-video">
+  <div class="container">
+    <h1 class="title">
+      Luneau Project
+    </h1>
+    <div class="row-luneau">
+      <label>AUTH-SERVER-URL</label>
+      <input class="input-luneau" type="text" [(ngModel)]="authUrl" />
+    </div>
+    <div class="row-luneau">
+      <label>API-KEY</label>
+      <input
+        class="input-luneau input-w-button"
+        type="text"
+        [(ngModel)]="apiKey"
+      />
+    </div>
+    <div class="row-luneau">
+      <label>DEVICE-SERVER-URL</label>
+      <input class="input-luneau" type="text" [(ngModel)]="deviceServerUrl" />
+    </div>
+    <button class="button-luneau" (click)="requestToken()">
+      {{ isFetching ? "Loading..." : "Connect" }}
+    </button>
+    <span
+      class="row-luneau authenticated-message"
+      *ngIf="authToken !== undefined"
+    >
+      You are successfully authenticated !
+    </span>
+  </div>
+  <video autoplay [srcObject]="deviceStream" *ngIf="deviceStream"></video>
 </div>
-<ul>
-  <li>
-    <label>Auth server URL</label> : <input type="text" [(ngModel)]="authUrl" />
-  </li>
-  <li><label>Api Key</label> : <input type="text" [(ngModel)]="apiKey" /></li>
-  <li>
-    <button (click)="requestToken()">Get Token</button>
-  </li>
-  <li>Authenticated : {{ authToken !== undefined }}</li>
-  <li><label>Device server URL</label> : <input type="text" [(ngModel)]="deviceServerUrl" /></li>
-</ul>
-<video autoplay [srcObject]="deviceStream"></video>

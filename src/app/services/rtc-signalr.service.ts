@@ -4,7 +4,6 @@ import {
   HubConnection,
   HttpTransportType,
 } from "@microsoft/signalr";
-import { tokenName } from '@angular/compiler';
 
 interface IceCandidate {
   candidate: string;
@@ -24,9 +23,12 @@ export class SignalRTCService {
   private _hubConnection: HubConnection;
   constructor() {}
 
-  public StartConnection(deviceServerUrl: string, authToken: string): Promise<void> {
+  public startConnection(
+    deviceServerUrl: string,
+    authToken: string
+  ): Promise<void> {
     console.log(authToken);
-    
+
     this._hubConnection = new HubConnectionBuilder()
       .withUrl(deviceServerUrl + "/hubs/rtc", {
         skipNegotiation: true,
@@ -37,19 +39,19 @@ export class SignalRTCService {
     return this._hubConnection.start();
   }
 
-  public OnIceCandidate(action: (iceCandidate: IceCandidate) => void): void {
+  public onIceCandidate(action: (iceCandidate: IceCandidate) => void): void {
     return this._hubConnection.on("iceCandidate", action);
   }
 
-  public OnSdp(action: (sdp: Sdp) => void): void {
+  public onSdp(action: (sdp: Sdp) => void): void {
     return this._hubConnection.on("sdp", action);
   }
 
-  public SendSdp(sdp: Sdp): Promise<void> {
+  public sendSdp(sdp: Sdp): Promise<void> {
     return this._hubConnection.invoke("AddSdp", sdp);
   }
 
-  public SendIceCandidate(iceCandidate: IceCandidate): Promise<void> {
+  public sendIceCandidate(iceCandidate: IceCandidate): Promise<void> {
     return this._hubConnection.invoke("AddIceCandidate", iceCandidate);
   }
 }
