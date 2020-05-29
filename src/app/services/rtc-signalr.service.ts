@@ -39,19 +39,7 @@ export class SignalRTCService {
     return this._hubConnection.start();
   }
 
-  public onIceCandidate(action: (iceCandidate: IceCandidate) => void): void {
-    return this._hubConnection.on("iceCandidate", action);
-  }
-
-  public onSdp(action: (sdp: Sdp) => void): void {
-    return this._hubConnection.on("sdp", action);
-  }
-
-  public sendSdp(sdp: Sdp): Promise<void> {
-    return this._hubConnection.invoke("AddSdp", sdp);
-  }
-
-  public sendIceCandidate(iceCandidate: IceCandidate): Promise<void> {
-    return this._hubConnection.invoke("AddIceCandidate", iceCandidate);
+  public onImage(action: (base64Img: string) => any): void {
+    return this._hubConnection.on("image", action);
   }
 }

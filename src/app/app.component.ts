@@ -19,6 +19,12 @@ export class AppComponent {
     this.getCredentials();
   }
 
+  private drawImage(ctx: CanvasRenderingContext2D, base64Img: string): void {
+    const img = new Image();
+    img.src = "data:image;base64," + base64Img;
+    img.onload = () => ctx.drawImage(img, 0, 0);
+  }
+
   private getCredentials(): void {
     const credentials: {
       authUrl: string;
@@ -63,34 +69,13 @@ export class AppComponent {
       this.deviceServerUrl,
       authToken
     );
+    const canvas: HTMLCanvasElement = document.getElementById("AAA") as any;
+    const ctx = canvas.getContext("2d");
+    console.log("subscribe to image");
+    this.signalrRTCService.onImage((base64Img) => {
+      console.log("new image");
+      this.drawImage(ctx, base64Img);
+    });
     console.log("connected to hub");
-    const initiator = new RTCInitiator(
-      undefined,
-      (infos) => {
-        if (infos.type === "ICECANDIDATE") {
-          this.signalrRTCService.sendIceCandidate(infos.content[0]);
-          return;
-        }
-        this.signalrRTCService.sendSdp(infos.content);
-      },
-      undefined,
-      console.warn
-    );
-    this.signalrRTCService.onIceCandidate((iceCandidate) => {
-      console.log(iceCandidate);
-
-      initiator.addInformations(
-        new RTCInformation("ICECANDIDATE", iceCandidate)
-      );
-    });
-    this.signalrRTCService.onSdp((sdp) => {
-      console.log(sdp);
-
-      initiator.addInformations(new RTCInformation("ANSWER", sdp));
-    });
-    initiator.onStream((stream) => {
-      console.log("Remote stream received", stream);
-      this.deviceStream = stream;
-    });
   }
 }
