@@ -52,18 +52,6 @@ export class AppComponent {
     console.log("authenticated, token : " + this.authToken);
   }
 
-  private saveCredentials() {
-    const authUrl = this.authUrl;
-    const apiKey = this.apiKey;
-    const deviceServerUrl = this.deviceServerUrl;
-    const credentials = {
-      authUrl,
-      apiKey,
-      deviceServerUrl,
-    };
-    localStorage.setItem("credentials", JSON.stringify(credentials));
-  }
-
   public async startRtcConnection(authToken: string): Promise<void> {
     await this.signalrRTCService.startConnection(
       this.deviceServerUrl,
@@ -77,5 +65,26 @@ export class AppComponent {
       this.drawImage(ctx, base64Img);
     });
     console.log("connected to hub");
+
+    this.signalrRTCService.onMessage((message) => {
+      console.log(message);
+    });
+    const result = await this.signalrRTCService.addItem(
+      { name: "ketchup", price: 500 },
+      3
+    );
+    console.log(result);
+  }
+
+  private saveCredentials(): void {
+    const authUrl = this.authUrl;
+    const apiKey = this.apiKey;
+    const deviceServerUrl = this.deviceServerUrl;
+    const credentials = {
+      authUrl,
+      apiKey,
+      deviceServerUrl,
+    };
+    localStorage.setItem("credentials", JSON.stringify(credentials));
   }
 }
