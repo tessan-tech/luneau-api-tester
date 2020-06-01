@@ -30,7 +30,7 @@ export class SignalRTCService {
     console.log(authToken);
 
     this._hubConnection = new HubConnectionBuilder()
-      .withUrl(deviceServerUrl + "/hubs/rtc", {
+      .withUrl(deviceServerUrl + "/hubs", {
         skipNegotiation: true,
         accessTokenFactory: () => authToken,
         transport: HttpTransportType.WebSockets,

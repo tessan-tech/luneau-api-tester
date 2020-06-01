@@ -36,6 +36,6 @@
   <div *ngIf="authToken || true">
     <input type="text" placeholder="item name" [(ngModel)]="itemName" />
     <input type="number" placeholder="item price" [(ngModel)]="itemPrice" />
-    <button (click)="addToCart(itemName, itemPrice)">Send</button>
+    <button (click)="addToCart(itemName, itemPrice, 5)">Send</button>
   </div>
 </div>

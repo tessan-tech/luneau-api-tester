@@ -70,10 +70,14 @@ export class AppComponent {
     });
   }
 
-  public async addToCart(itemName: string, itemPrice: number): Promise<void> {
+  public async addToCart(
+    itemName: string,
+    itemPrice: number,
+    itemquantity: number
+  ): Promise<void> {
     const result = await this.signalrRTCService.addItem(
       { name: itemName, price: itemPrice },
-      3
+      itemquantity
     );
     console.log(result);
   }
