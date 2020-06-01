@@ -12,8 +12,9 @@ export class AppComponent {
   public deviceServerUrl: string = "http://localhost:3001";
   public apiKey: string = "";
   public authToken: string;
-  public deviceStream: MediaStream;
   public isFetching: boolean = false;
+  public itemName: string;
+  public itemPrice: number;
 
   constructor(private signalrRTCService: SignalrRTCService) {
     this.getCredentials();
@@ -64,13 +65,14 @@ export class AppComponent {
       console.log("new image");
       this.drawImage(ctx, base64Img);
     });
-    console.log("connected to hub");
+  }
 
+  public async addToCart(itemName: string, itemPrice: number): Promise<void> {
     this.signalrRTCService.onMessage((message) => {
       console.log(message);
     });
     const result = await this.signalrRTCService.addItem(
-      { name: "ketchup", price: 500 },
+      { name: itemName, price: itemPrice },
       3
     );
     console.log(result);
