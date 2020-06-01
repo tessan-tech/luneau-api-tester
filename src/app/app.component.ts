@@ -65,12 +65,12 @@ export class AppComponent {
       console.log("new image");
       this.drawImage(ctx, base64Img);
     });
-  }
-
-  public async addToCart(itemName: string, itemPrice: number): Promise<void> {
     this.signalrRTCService.onMessage((message) => {
       console.log(message);
     });
+  }
+
+  public async addToCart(itemName: string, itemPrice: number): Promise<void> {
     const result = await this.signalrRTCService.addItem(
       { name: itemName, price: itemPrice },
       3
