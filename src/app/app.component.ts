@@ -13,17 +13,10 @@ export class AppComponent {
   public apiKey: string = "";
   public authToken: string;
   public isFetching: boolean = false;
-  public itemName: string;
-  public itemPrice: number;
+  public videoUrl: string = undefined;
 
   constructor(private signalrRTCService: SignalrRTCService) {
     this.getCredentials();
-  }
-
-  private drawImage(ctx: CanvasRenderingContext2D, base64Img: string): void {
-    const img = new Image();
-    img.src = "data:image;base64," + base64Img;
-    img.onload = () => ctx.drawImage(img, 0, 0);
   }
 
   private getCredentials(): void {
@@ -58,28 +51,11 @@ export class AppComponent {
       this.deviceServerUrl,
       authToken
     );
-    const canvas: HTMLCanvasElement = document.getElementById("AAA") as any;
-    const ctx = canvas.getContext("2d");
-    console.log("subscribe to image");
-    this.signalrRTCService.onImage((base64Img) => {
-      console.log("new image");
-      this.drawImage(ctx, base64Img);
+    console.log("subscribe to url");
+    this.signalrRTCService.onStreamUrl(url => {
+      console.log(`url received: ${url}`);
+      this.videoUrl = url;
     });
-    this.signalrRTCService.onMessage((message) => {
-      console.log(message);
-    });
-  }
-
-  public async addToCart(
-    itemName: string,
-    itemPrice: number,
-    itemquantity: number
-  ): Promise<void> {
-    const result = await this.signalrRTCService.addItem(
-      { name: itemName, price: itemPrice },
-      itemquantity
-    );
-    console.log(result);
   }
 
   private saveCredentials(): void {

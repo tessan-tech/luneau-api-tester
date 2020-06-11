@@ -29,13 +29,6 @@
       You are successfully authenticated !
     </span>
   </div>
-  <canvas id="AAA" width="1280" height="720" style="border: 1px solid #d3d3d3;">
-    Your browser does not support the canvas element.
-  </canvas>
-
-  <div *ngIf="authToken || true">
-    <input type="text" placeholder="item name" [(ngModel)]="itemName" />
-    <input type="number" placeholder="item price" [(ngModel)]="itemPrice" />
-    <button (click)="addToCart(itemName, itemPrice, 5)">Send</button>
-  </div>
+  <video *ngIf="videoUrl != undefined" src="{{videoUrl}}" autoplay width="320" height="180">
+  </video>
 </div>

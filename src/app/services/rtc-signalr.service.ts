@@ -39,18 +39,7 @@ export class SignalRTCService {
     return this._hubConnection.start();
   }
 
-  public addItem(
-    item: { name: string; price: number },
-    quantity: number
-  ): Promise<{ result: number; totalPrice: number }> {
-    return this._hubConnection.invoke("addItem", item, quantity);
-  }
-
-  public onMessage(action: (message: string) => any): void {
-    this._hubConnection.on("message", action);
-  }
-
-  public onImage(action: (base64Img: string) => any): void {
-    return this._hubConnection.on("image", action);
+  public onStreamUrl(action: (steamUrl: string) => any): void {
+    return this._hubConnection.on("videoUrl", action);
   }
 }
