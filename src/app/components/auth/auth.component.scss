@@ -1,0 +1,60 @@
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  color: black;
+  font-family: monospace;
+  text-align: center;
+}
+
+.input-luneau {
+  padding: 5px;
+  width: 300px;
+  border-radius: 3px;
+  text-indent: 3px;
+  font-family: monospace;
+  font-size: 10px;
+}
+
+.button-luneau {
+  padding: 7px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 5px;
+}
+
+.row-luneau {
+  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-weight: bold;
+  font-size: 12px;
+  font-family: monospace;
+  color: black;
+  margin-bottom: 5px;
+}
+
+.wrapper-container-video {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  height: 100%;
+}
+
+.authenticated-message {
+  color: green;
+  text-align: center;
+  font-family: monospace;
+}
+
+:host {
+  display: block;
+  height: 100vh;
+}

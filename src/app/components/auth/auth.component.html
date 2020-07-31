@@ -1,0 +1,32 @@
+<div class="wrapper-container-video">
+  <div class="container">
+    <h1 class="title">
+      Luneau Project
+    </h1>
+    <div class="row-luneau">
+      <label>AUTH-SERVER-URL</label>
+      <input class="input-luneau" type="text" [(ngModel)]="authUrl" />
+    </div>
+    <div class="row-luneau">
+      <label>API-KEY</label>
+      <input
+        class="input-luneau input-w-button"
+        type="text"
+        [(ngModel)]="apiKey"
+      />
+    </div>
+    <div class="row-luneau">
+      <label>DEVICE-SERVER-URL</label>
+      <input class="input-luneau" type="text" [(ngModel)]="deviceServerUrl" />
+    </div>
+    <button class="button-luneau" (click)="requestToken()">
+      {{ isFetching ? "Loading..." : "Connect" }}
+    </button>
+    <span
+      class="row-luneau authenticated-message"
+      *ngIf="authToken !== undefined"
+    >
+      You are successfully authenticated !
+    </span>
+  </div>
+</div>

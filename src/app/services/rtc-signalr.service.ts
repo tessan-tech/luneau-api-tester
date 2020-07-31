@@ -5,52 +5,56 @@ import {
   HttpTransportType,
 } from "@microsoft/signalr";
 
-interface IceCandidate {
-  candidate: string;
-  sdpMlineindex: number;
-  sdpMid: string;
-}
-
-interface Sdp {
-  type: string;
-  sdp: string;
-}
-
 @Injectable({
   providedIn: "root",
 })
 export class SignalRTCService {
-  private _hubConnection: HubConnection;
+  private hubConnection: HubConnection;
   constructor() {}
 
   public startConnection(
     deviceServerUrl: string,
     authToken: string
   ): Promise<void> {
-    console.log(authToken);
-
-    this._hubConnection = new HubConnectionBuilder()
+    this.hubConnection = new HubConnectionBuilder()
       .withUrl(deviceServerUrl + "/hubs", {
         skipNegotiation: true,
         accessTokenFactory: () => authToken,
         transport: HttpTransportType.WebSockets,
       })
       .build();
-    return this._hubConnection.start();
+    return this.hubConnection.start();
   }
 
-  public addItem(
-    item: { name: string; price: number },
-    quantity: number
-  ): Promise<{ result: number; totalPrice: number }> {
-    return this._hubConnection.invoke("addItem", item, quantity);
-  }
-
-  public onMessage(action: (message: string) => any): void {
-    this._hubConnection.on("message", action);
+  public onStatus(action: (status: Status) => any): void {
+    this.hubConnection.on("status", action);
   }
 
   public onImage(action: (base64Img: string) => any): void {
-    return this._hubConnection.on("image", action);
+    return this.hubConnection.on("image", action);
   }
+
+  public onAvailableCommands(
+    action: (availableCommands: string[]) => any
+  ): void {
+    return this.hubConnection.on("availableCommands", action);
+  }
+
+  public execute(commandName: string, argument: any): Promise<any> {
+    console.log(argument);
+
+    return this.hubConnection.invoke("command", commandName, argument);
+  }
+}
+
+export interface Status {
+  name: string;
+  payload: any;
+}
+
+export enum EXAM_STATUS {
+  AVAILABLE_EXAMS = "AVAILABLE_EXAMS",
+  STARTING_EXAM = "STARTING_EXAM",
+  FAILED_EXAM = "FAILED_EXAM",
+  RESULT_EXAM = "RESULT_EXAM",
 }

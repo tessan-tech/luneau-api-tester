@@ -1,0 +1,88 @@
+<div class="home-container">
+  <div class="logs" #logs>
+    <h2>STATUS</h2>
+    <pre class="status-container">
+      <code *ngFor="let status of statues">
+        > {{ status.name }}: 
+        <br>
+        <b>{{ status.payload | json}}</b>
+        <hr>
+      </code>
+    </pre>
+  </div>
+  <div class="interface">
+    <div class="task-container" *ngIf="exams.length > 0">
+      <h2>Test à effectuer</h2>
+      <div class="available-exam-container">
+        <div
+          class="available-exam"
+          *ngFor="let availableExam of availableExams"
+        >
+          <span>{{ availableExam }}</span>
+          <div
+            class="status"
+            [ngClass]="{ active: exams.includes(availableExam) }"
+          ></div>
+        </div>
+      </div>
+    </div>
+    <canvas id="canvas">
+      Your browser does not support the canvas element.
+    </canvas>
+  </div>
+  <div class="commands">
+    <h2>COMMANDS</h2>
+    <div class="loader" *ngIf="isLoading">
+      <div class="lds-ripple">
+        <div></div>
+        <div></div>
+      </div>
+    </div>
+    <div
+      class="flex-between"
+      *ngFor="let availableCommand of availableCommands"
+    >
+      <button
+        *ngIf="availableCommand !== 'START_EXAMS'"
+        (click)="execute(availableCommand, argumentCommand.value)"
+        type="button"
+        class="command-button"
+        [disabled]="isLoading"
+      >
+        {{ availableCommand }}
+      </button>
+      <button
+        *ngIf="availableCommand === 'START_EXAMS'"
+        (click)="executeExams(availableCommand)"
+        type="button"
+        class="command-button"
+        [disabled]="isLoading"
+      >
+        {{ availableCommand }}
+      </button>
+
+      <input
+        [hidden]="availableCommand === 'START_EXAMS'"
+        #argumentCommand
+        type="text"
+        class="argument-input"
+        placeholder="arguments"
+      />
+      <div
+        class="checkbox-container"
+        *ngIf="availableCommand === 'START_EXAMS'"
+      >
+        <div *ngFor="let exam of availableExams">
+          <input
+            type="checkbox"
+            (change)="onExamChange(exam, $event.target.checked)"
+            [name]="exam"
+          />
+          <label class="form-check-label" for="{{ exam }}">
+            {{ exam }}
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
