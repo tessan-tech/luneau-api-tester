@@ -14,15 +14,9 @@
     <div class="task-container" *ngIf="exams.length > 0">
       <h2>Test à effectuer</h2>
       <div class="available-exam-container">
-        <div
-          class="available-exam"
-          *ngFor="let availableExam of availableExams"
-        >
-          <span>{{ availableExam }}</span>
-          <div
-            class="status"
-            [ngClass]="{ active: exams.includes(availableExam) }"
-          ></div>
+        <div class="available-exam" *ngFor="let exam of exams">
+          <span>{{ exam.name }}</span>
+          <div class="status" [ngClass]="getStatusExam(exam.name)"></div>
         </div>
       </div>
     </div>
@@ -72,8 +66,9 @@
         class="checkbox-container"
         *ngIf="availableCommand === 'START_EXAMS'"
       >
-        <div *ngFor="let exam of availableExams">
+        <div class="checkbox" *ngFor="let exam of availableExams">
           <input
+            [checked]="checkedBox(exam)"
             type="checkbox"
             (change)="onExamChange(exam, $event.target.checked)"
             [name]="exam"

@@ -17,7 +17,7 @@ export class HomeComponent implements OnInit {
   public statues: Status[] = [];
   public isLoading = false;
   public canvas: HTMLCanvasElement;
-  public exams: string[] = [];
+  public exams: { name: string; status: string }[] = [];
   public availableExams: string[] = [];
   @ViewChild("logs", { static: false }) public logsContainer: ElementRef;
   constructor(
@@ -48,6 +48,10 @@ export class HomeComponent implements OnInit {
     });
     this.signalrRTCService.onAvailableCommands((availableCommands) => {
       this.availableCommands = availableCommands;
+      if (!availableCommands.includes("ABORT_EXAMS")) {
+        this.exams = [];
+        this.statues = [];
+      }
     });
   }
 
@@ -61,12 +65,37 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  public onExamChange(exam: string, checked: boolean): void {
+  public getStatusExam(examName: string) {
+    const statusFound = this.statues.find((s) => s.payload.name === examName);
+    if (!statusFound) return;
+    switch (statusFound.name) {
+      case "STARTING_EXAM":
+        return "starting-exam";
+      case "RESULT_EXAM":
+        return "result-exam";
+      case "FAILED_EXAM":
+        return "failed-exam";
+      case "PENDING_EXAM":
+        return "pending-exam";
+      default:
+        return "";
+    }
+  }
+
+  public onExamChange(examName: string, checked: boolean): void {
     if (!checked) {
-      this.exams = this.exams.filter((examName) => examName !== exam);
+      this.exams = this.exams.filter((exam) => exam.name !== examName);
       return;
     }
-    this.exams.push(exam);
+    this.exams.push({ name: examName, status: "PENDING_EXAM" });
+  }
+
+  private resetExams(): void {
+    this.exams = [];
+  }
+
+  public checkedBox(exam: string) {
+    return this.exams.map((e) => e.name).includes(exam);
   }
 
   private drawImage(ctx: CanvasRenderingContext2D, base64Img: string): void {
@@ -82,13 +111,18 @@ export class HomeComponent implements OnInit {
 
   public async execute(commandName: string, argument: string): Promise<void> {
     this.isLoading = true;
-    await this.signalrRTCService.execute(commandName, argument && argument);
+    await this.signalrRTCService.execute(
+      commandName,
+      argument && JSON.parse(argument)
+    );
     this.isLoading = false;
   }
 
   public async executeExams(commandName: string): Promise<void> {
     this.isLoading = true;
-    await this.signalrRTCService.execute(commandName, { exams: this.exams });
+    await this.signalrRTCService.execute(commandName, {
+      exams: this.exams.map((exam) => exam.name),
+    });
     this.isLoading = false;
   }
 }

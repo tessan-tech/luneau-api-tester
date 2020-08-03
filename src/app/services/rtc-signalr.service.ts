@@ -41,8 +41,6 @@ export class SignalRTCService {
   }
 
   public execute(commandName: string, argument: any): Promise<any> {
-    console.log(argument);
-
     return this.hubConnection.invoke("command", commandName, argument);
   }
 }
