@@ -11,10 +11,10 @@
     </pre>
   </div>
   <div class="interface">
-    <div class="task-container" *ngIf="exams.length > 0">
+    <div class="task-container" *ngIf="currentExams.length > 0">
       <h2>Test à effectuer</h2>
       <div class="available-exam-container">
-        <div class="available-exam" *ngFor="let exam of exams">
+        <div class="available-exam" *ngFor="let exam of currentExams">
           <span>{{ exam.name }}</span>
           <div class="status" [ngClass]="getStatusExam(exam.name)"></div>
         </div>

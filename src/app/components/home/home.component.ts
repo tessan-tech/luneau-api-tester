@@ -17,8 +17,9 @@ export class HomeComponent implements OnInit {
   public statues: Status[] = [];
   public isLoading = false;
   public canvas: HTMLCanvasElement;
-  public exams: { name: string; status: string }[] = [];
-  public availableExams: string[] = [];
+  public currentExams: { name: string; status: string }[] = [];
+  public checkedExams: { name: string; status: string }[] = [];
+  public availableExams: string[] = ["WF", "TOPO", "FONDUS"];
   @ViewChild("logs", { static: false }) public logsContainer: ElementRef;
   constructor(
     private signalrRTCService: SignalrRTCService,
@@ -44,25 +45,11 @@ export class HomeComponent implements OnInit {
       this.drawImage(ctx, base64Img);
     });
     this.signalrRTCService.onStatus((status) => {
-      this.filterStatus(status);
+      this.statues.unshift(status);
     });
     this.signalrRTCService.onAvailableCommands((availableCommands) => {
       this.availableCommands = availableCommands;
-      if (!availableCommands.includes("ABORT_EXAMS")) {
-        this.exams = [];
-        this.statues = [];
-      }
     });
-  }
-
-  private filterStatus(status: Status): void {
-    switch (status.name) {
-      case "AVAILABLE_EXAMS":
-        this.availableExams = status.payload.exams;
-        break;
-      default:
-        this.statues.unshift(status);
-    }
   }
 
   public getStatusExam(examName: string) {
@@ -84,18 +71,14 @@ export class HomeComponent implements OnInit {
 
   public onExamChange(examName: string, checked: boolean): void {
     if (!checked) {
-      this.exams = this.exams.filter((exam) => exam.name !== examName);
+      this.checkedExams = this.checkedExams.filter((exam) => exam.name !== examName);
       return;
     }
-    this.exams.push({ name: examName, status: "PENDING_EXAM" });
+    this.checkedExams.push({ name: examName, status: "PENDING_EXAM" });
   }
 
-  private resetExams(): void {
-    this.exams = [];
-  }
-
-  public checkedBox(exam: string) {
-    return this.exams.map((e) => e.name).includes(exam);
+  public checkedBox(exam: string):boolean {
+    return this.checkedExams.map((e) => e.name).includes(exam);
   }
 
   private drawImage(ctx: CanvasRenderingContext2D, base64Img: string): void {
@@ -120,8 +103,10 @@ export class HomeComponent implements OnInit {
 
   public async executeExams(commandName: string): Promise<void> {
     this.isLoading = true;
+    this.statues = [];
+    this.currentExams = [...this.checkedExams];
     await this.signalrRTCService.execute(commandName, {
-      exams: this.exams.map((exam) => exam.name),
+      exams: this.currentExams.map((exam) => exam.name),
     });
     this.isLoading = false;
   }
