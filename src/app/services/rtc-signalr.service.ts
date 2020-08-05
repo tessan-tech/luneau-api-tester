@@ -34,6 +34,10 @@ export class SignalRTCService {
     return this.hubConnection.on("image", action);
   }
 
+  public onPdf(action: (base64Pdf: string) => any): void {
+    return this.hubConnection.on("pdf", action);
+  }
+
   public onAvailableCommands(
     action: (availableCommands: string[]) => any
   ): void {

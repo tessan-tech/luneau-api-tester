@@ -4,6 +4,7 @@ import {
   Status,
 } from "src/app/services";
 import { ActivatedRoute } from "@angular/router";
+import { browser } from 'protractor';
 @Component({
   selector: "app-home",
   templateUrl: "./home.component.html",
@@ -20,6 +21,8 @@ export class HomeComponent implements OnInit {
   public currentExams: { name: string; status: string }[] = [];
   public checkedExams: { name: string; status: string }[] = [];
   public availableExams: string[] = ["WF", "TOPO", "FONDUS"];
+  public pdfBlob: Blob;
+
   @ViewChild("logs", { static: false }) public logsContainer: ElementRef;
   constructor(
     private signalrRTCService: SignalrRTCService,
@@ -44,6 +47,7 @@ export class HomeComponent implements OnInit {
     this.signalrRTCService.onImage((base64Img) => {
       this.drawImage(ctx, base64Img);
     });
+    this.signalrRTCService.onPdf(b64pdf => this.openPdf(b64pdf));
     this.signalrRTCService.onStatus((status) => {
       this.statues.unshift(status);
     });
@@ -77,7 +81,7 @@ export class HomeComponent implements OnInit {
     this.checkedExams.push({ name: examName, status: "PENDING_EXAM" });
   }
 
-  public checkedBox(exam: string):boolean {
+  public checkedBox(exam: string): boolean {
     return this.checkedExams.map((e) => e.name).includes(exam);
   }
 
@@ -90,6 +94,15 @@ export class HomeComponent implements OnInit {
         this.canvas.width / 2 - img.width / 2,
         this.canvas.height / 2 - img.height / 2
       );
+  }
+
+  private openPdf(b64Pdf: string): void {
+    const blob = new Blob([atob(b64Pdf)], { type: "data:application/pdf" });
+    const localURL = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = localURL;
+    link.download = "sample.pdf"; 
+    link.click();
   }
 
   public async execute(commandName: string, argument: string): Promise<void> {
