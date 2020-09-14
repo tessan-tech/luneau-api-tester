@@ -17,7 +17,8 @@ export class HomeComponent implements OnInit {
   public availableCommands: string[];
   public statues: Status[] = [];
   public isLoading = false;
-  public canvas: HTMLCanvasElement;
+  public canvasCamera1: HTMLCanvasElement;
+  public canvasCamera2: HTMLCanvasElement;
   public currentExams: { name: string; status: string }[] = [];
   public checkedExams: { name: string; status: string }[] = [];
   public availableExams: string[] = ["WF", "TOPO", "FONDUS"];
@@ -33,20 +34,32 @@ export class HomeComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
+    this.canvasCamera1 = document.getElementById("canvas1") as HTMLCanvasElement;
+    this.canvasCamera2 = document.getElementById("canvas2") as HTMLCanvasElement;
   }
 
   public async startRtcConnection(authToken: string): Promise<void> {
     const deviceServerUrl = JSON.parse(localStorage.getItem("credentials"))
       .deviceServerUrl;
     await this.signalrRTCService.startConnection(deviceServerUrl, authToken);
-    const canvas: HTMLCanvasElement = document.getElementById(
-      "canvas"
-    ) as HTMLCanvasElement;
-    const ctx = canvas.getContext("2d");
-    this.signalrRTCService.onImage((base64Img) => {
-      this.drawImage(ctx, base64Img);
+    const ctxCanvas1 = this.canvasCamera1.getContext("2d");
+    const ctxCanvas2 = this.canvasCamera2.getContext("2d");
+
+    this.signalrRTCService.onImage((base64Img, cameraName) => {
+      console.log(cameraName);
+
+      switch (cameraName) {
+        case "sample1":
+          this.drawImage(ctxCanvas1, base64Img);
+          break;
+        case "sample2":
+          this.drawImage(ctxCanvas2, base64Img);
+          break;
+        default:
+          throw new Error(`Unhandled camera ${cameraName}`);
+      }
     });
+
     this.signalrRTCService.onPdf(b64pdf => this.openPdf(b64pdf));
     this.signalrRTCService.onStatus((status) => {
       this.statues.unshift(status);
@@ -91,17 +104,18 @@ export class HomeComponent implements OnInit {
     img.onload = () =>
       ctx.drawImage(
         img,
-        this.canvas.width / 2 - img.width / 2,
-        this.canvas.height / 2 - img.height / 2
+        ctx.canvas.width / 2 - img.width / 2,
+        ctx.canvas.height / 2 - img.height / 2
       );
   }
 
   private openPdf(b64Pdf: string): void {
+    return;
     const blob = new Blob([atob(b64Pdf)], { type: "data:application/pdf" });
     const localURL = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = localURL;
-    link.download = "sample.pdf"; 
+    link.download = "sample.pdf";
     link.click();
   }
 

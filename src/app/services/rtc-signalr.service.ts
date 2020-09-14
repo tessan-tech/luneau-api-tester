@@ -10,7 +10,7 @@ import {
 })
 export class SignalRTCService {
   private hubConnection: HubConnection;
-  constructor() {}
+  constructor() { }
 
   public startConnection(
     deviceServerUrl: string,
@@ -30,7 +30,7 @@ export class SignalRTCService {
     this.hubConnection.on("status", action);
   }
 
-  public onImage(action: (base64Img: string) => any): void {
+  public onImage(action: (base64Img: string, cameraName: string) => any): void {
     return this.hubConnection.on("image", action);
   }
 
