@@ -5,6 +5,7 @@ import {
 } from "src/app/services";
 import { ActivatedRoute } from "@angular/router";
 import { browser } from 'protractor';
+
 @Component({
   selector: "app-home",
   templateUrl: "./home.component.html",
@@ -110,8 +111,8 @@ export class HomeComponent implements OnInit {
   }
 
   private openPdf(b64Pdf: string): void {
-    return;
-    const blob = new Blob([atob(b64Pdf)], { type: "data:application/pdf" });
+    const data = Uint8Array.from(atob(b64Pdf), c => c.charCodeAt(0));
+    const blob = new Blob([data], { type: "data:application/pdf" });
     const localURL = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = localURL;
