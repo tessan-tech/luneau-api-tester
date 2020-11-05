@@ -60,7 +60,7 @@ export class HomeComponent implements OnInit {
       }
     });
 
-    this.signalrRTCService.onPdf(b64pdf => this.openPdf(b64pdf));
+    this.signalrRTCService.onExamResult(b64pdf => this.openExamResult(b64pdf));
     this.signalrRTCService.onStatus((status) => {
       this.statues.unshift(status);
     });
@@ -109,14 +109,10 @@ export class HomeComponent implements OnInit {
       );
   }
 
-  private openPdf(b64Pdf: string): void {
-    return;
-    const blob = new Blob([atob(b64Pdf)], { type: "data:application/pdf" });
+  private openExamResult(b64Data: string): void {
+    const blob = new Blob([atob(b64Data)], { type: 'text/html' });
     const localURL = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = localURL;
-    link.download = "sample.pdf";
-    link.click();
+    window.open(localURL, "_blank");
   }
 
   public async execute(commandName: string, argument: string): Promise<void> {
